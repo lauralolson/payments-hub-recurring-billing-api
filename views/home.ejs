@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Document</title>
+   <style>
+   	body {
+       	max-width: 500px;
+       	margin: 20px auto;
+       	padding: 1rem;
+   	}
+   	.details > div {
+       	margin-top: .5rem;
+       	display: flex;
+       	flex-direction: column;
+   	}
+   	button {
+       	margin-top: 1rem;
+   	}
+   </style>
+</head>
+<body>
+   <h3>Choose a plan</h3>
+   <button id="basic">Basic</button>
+   <button id="premium">Premium</button>
+
+   <form id="form">
+   	<h4>Personal details:</h4>
+   	<div class="details">
+       	<div>
+           	<label>First Name:</label>
+           	<input type="text" id="firstName" value="John">
+       	</div>
+       	<div>
+           	<label>Last Name:</label>
+           	<input type="text" id="lastName" value="Smith">
+       	</div>
+       	<div>
+           	<label>Phone:</label>
+           	<input type="text" id="phone" value="1234567890">
+       	</div>
+       	<div>
+           	<label>Email:</label>
+           	<input type="email" id="email" value="jsmith@email.com">
+       	</div>
+   	</div>
+
+   	<h4>Payment details:</h4>
+   	<div class="details">
+       	<div>
+           	<label>Account Number:</label>
+           	<input type="number" id="accountNo" value="4111111111111111">
+       	</div>
+       	<div>
+           	<label>CVV</label>
+           	<input type="number" id="cvv" value="123">
+       	</div>
+       	<div>
+           	<label>Expiration Date</label>
+           	<input type="number" id="expiry" value="2208">
+       	</div>
+   	</div>
+
+   	<button type="submit">Sign up</button>
+   </form>
+
+   <script>
+   	const basicBtn = document.getElementById('basic')
+   	const premiumBtn = document.getElementById('premium')
+
+   	let PlanType = ''
+   	let Amount
+
+   	basicBtn.addEventListener('click', () => {
+       	PlanType = 'basic'
+       	Amount = 10.99
+   	})
+
+   	premiumBtn.addEventListener('click', () => {
+       	PlanType = 'premium'
+       	Amount = 29.99
+   	})
+
+   	const form = document.getElementById('form')
+
+   	form.addEventListener('submit', (e) => {
+       	e.preventDefault()
+
+       	const customerDetails = {
+           	FirstName: document.getElementById('firstName').value,
+           	LastName: document.getElementById('lastName').value,
+           	Phone: document.getElementById('phone').value,
+           	Email: document.getElementById('email').value,
+           	AccountNumber: document.getElementById('accountNo').value,
+           	CVV: document.getElementById('cvv').value,
+           	ExpirationDate: document.getElementById('expiry').value,
+           	PlanType,
+           	Amount
+       	}
+     	 
+       	fetch('http://localhost:3000/signup', {
+           	method: 'POST',
+           	headers: {
+               	'Content-Type': 'application/json'
+           	},
+           	body: JSON.stringify({
+               	customerDetails
+           	})
+       	})
+       	.then((res) => res.json()
+       	.then(json => {
+           	console.log(json)
+           	if(json.success === true){
+               	window.location.assign(`http://localhost:3000/profile?id=${json.id}`)
+           	}else {
+               	alert('An error occurred')
+           	}
+       	})
+       	)
+   	})
+   </script>
+</body>
+</html>
